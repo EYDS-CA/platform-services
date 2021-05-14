@@ -1,4 +1,4 @@
-FROM postgres:11
+FROM postgres/postgres:11
 MAINTAINER Alexander Kukushkin <alexander.kukushkin@zalando.de>
 ENV PATRONI_VERSION=1.6.5
 ENV LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
@@ -23,8 +23,15 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && mkdir -p $PGHOME/pgdata/pgroot \
     && chgrp -R 0 $PGHOME \
     && chown -R postgres $PGHOME \
-    && chmod -R 775 $PGHOME \
-    && echo 'Cleaning up' \
+    && chmod -R 775 $PGHOME
+
+RUN echo 'Installing PostGIS dependencies' \
+    && apt install wget \
+    && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
+    && apt-get update -y \
+    && apt install -y postgis postgresql-11-postgis-3
+
+RUN echo 'Cleaning up' \
     && apt-get remove -y git build-essential python3-dev python3-pip python3-wheel python3-setuptools \
     && apt-get autoremove -y \
     && apt-get clean -y \
