@@ -10,6 +10,7 @@ if [[ (! -z "$APP_USER") &&  (! -z "$APP_PASSWORD") && (! -z "$APP_DATABASE")]];
 
   echo "Enabling PostGIS extension"
   echo "\\c hcap \\\\ CREATE EXTENSION postgis;" | psql "$1"
+  echo "\\c hcap \\\\ CREATE EXTENSION pgcrypto;" | psql "$1"
 else
   echo "Skipping user creation"
   echo "Skipping database creation"
